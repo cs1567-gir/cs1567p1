@@ -59,6 +59,7 @@ find_package(catkin REQUIRED COMPONENTS
    FILES
    MakeNewMaze.srv
    GetMazeWall.srv
+   GetOdometry.srv
  )
 
 ## Generate actions in the 'action' folder
