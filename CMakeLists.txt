@@ -60,6 +60,10 @@ find_package(catkin REQUIRED COMPONENTS
    MakeNewMaze.srv
    GetMazeWall.srv
    GetOdometry.srv
+   CS1567RobotMove.srv
+   CS1567RobotTurn.srv
+   StopAll.srv
+   ConstantCommand.srv
  )
 
 ## Generate actions in the 'action' folder
