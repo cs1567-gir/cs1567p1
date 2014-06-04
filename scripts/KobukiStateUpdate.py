@@ -54,21 +54,25 @@ def odometry_service(parameters):
     return resp
 
 def move_service(parameters):
+    print parameters
     if parameters.type == 'move_to':
-        return robot_state.move_to(parameters.a, parameters.b)
+        retval = robot_state.move_to(parameters.a, parameters.b) 
     elif parameters.type == 'move_distance':
-        return robot_state.move_distance(parameters.a, parameters.b)
+        retval = robot_state.move_distance(parameters.a)
     elif parameters.type == 'move_arc':
-        return robot_state.move_arc(parameters.a, parameters.b)
+        retval = robot_state.move_arc(parameters.a, parameters.b)
+    return CS1567RobotMoveResponse(retval)
 
 def turn_service(parameters):
     if parameters.type == 'relative':
-        return robot_state.turn_to_relative(parameters.theta)
+        retval = robot_state.turn_to_relative(parameters.theta)
     elif parameters.type == 'absolute':
-        return robot_state.turn_to_absolute(parameters.theta)
+        retval = robot_state.turn_to_absolute(parameters.theta)
+    return CS1567RobotTurnResponse(retval)
 
 def stop_all_motion(parameters):
-    return robot_state.stop_all_motion()
+    retval = robot_state.stop_all_motion()
+    return StopAllResponse(retval)
 
 def get_state(parameters):
     # return the overall state of the robot

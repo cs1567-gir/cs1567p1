@@ -2,6 +2,7 @@
 import rospy
 from cs1567p1.srv import *
 from std_srvs.srv import * 
+import math
 
 LEFT = 0
 RIGHT = 1
@@ -26,7 +27,9 @@ def turn_90_degrees():
     return 1
 
 def solve_maze():
-   return move_service('distance', 1.0, 0.0)
+   move_service('move_distance', 1.0, 0.0)
+   turn_service('relative', math.pi/2)
+   return 1
    # while True:
    #     data = get_odom_service(0)
    #     print data

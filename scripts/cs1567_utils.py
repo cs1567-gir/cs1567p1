@@ -32,11 +32,12 @@ class KobukiRobot():
         angle = math.copysign(2*math.acos(w), z)
         if angle < 0:
             angle = angle + 2*math.pi
+        print 'calculated angle: ', angle
         return angle
 
     def set_speeds(self, drive, turn):
         self.command.linear.x = drive
-        self.command.linear.z = turn
+        self.command.angular.z = turn
         self.send_command(self.command)
 
     def stop_all_motion(self):
@@ -59,27 +60,27 @@ class KobukiRobot():
     # turn to specified angle relative to current heading
     # TODO: check this logic
     def turn_to_relative(self, theta):
-        target_theta = theta - self.theta
+        target_heading = self.heading + theta
         error = theta
         while(abs(error) > 0.001):
             if abs(error) < 2:
                 self.set_speeds(0.0, math.copysign(0.2, error))
             else:
                 self.set_speeds(0.0, error*0.1)
-            error = target_theta - self.theta
+            error = target_heading - self.heading
         self.stop_all_motion()
         return 1
 
     # TODO: define this logic
     def turn_to_absolute(self, theta):
-        error = theta - self.theta
+        error = theta - self.heading
         # define acceptible range for angle
         while(abs(error) > 0.001):
             if abs(error) < 2:
                 self.set_speeds(0.0, math.copysign(0.2, error))
             else:
                 self.set_speeds(0.0, error * 0.1)
-            error = theta - self.theta
+            error = theta - self.heading
         self.stop_all_motion()
         return 1
 
