@@ -70,7 +70,7 @@ class KobukiRobot():
             target_heading += 2*math.pi
 
         error = target_heading - self.heading
-        while(abs(error) > 0.005):
+        while(abs(error) > 0.003):
             if abs(error) < 2:
                 self.set_speeds(0.0, math.copysign(0.2, error))
             else:
@@ -81,7 +81,6 @@ class KobukiRobot():
                 error -= 2*math.pi
             if error < -math.pi:
                 error += 2*math.pi
-            print 'error: ', error
         self.stop_all_motion()
         return 1
 
@@ -89,22 +88,52 @@ class KobukiRobot():
     def turn_to_absolute(self, theta):
         error = theta - self.heading
         # define acceptible range for angle
-        while(abs(error) > 0.001):
+        while(abs(error) > 0.003):
             if abs(error) < 2:
                 self.set_speeds(0.0, math.copysign(0.2, error))
             else:
                 self.set_speeds(0.0, error * 0.1)
             error = theta - self.heading
+            # ensure that: -pi < error < pi
+            if error > math.pi:
+                error -= 2*math.pi
+            if error < -math.pi:
+                error += 2*math.pi
         self.stop_all_motion()
         return 1
 
     # drive an arc described by a radius and an angle
     def move_arc(self, radius, theta):
+        turn_speed = 0.0
         current_distance = self.total_distance
+        current_heading = self.heading
         arc_length = radius * theta # some calculation
-        while(self.total_distance - current_distance < arc_length):
-            self.set_speeds(drive_speed, turn_speed)
-            rospy.sleep(0.1) # sleep time can change
-        self.stop_all_motion
+        while(self.total_distance - current_distance < abs(arc_length)):
+            turn_speed = 0.0
+            # calculate desired angle based on distance travelled
+            target_heading = (self.total_distance - current_distance)/radius
+            target_heading = math.copysign(target_heading, arc_length)
+            # offset by starting angle
+            target_heading -= current_heading
+            # ensure that 0 <= target_heading <= 2*pi
+            if target_heading < 0:
+                target_heading += 2*math.pi
+            if target_heading > 2*math.pi:
+                target_heading -= 2*math.pi
+
+            error = target_heading - self.heading
+            if error < -math.pi:
+                error += 2*math.pi
+            if error > math.pi:
+                error -= 2*math.pi
+            # correct angle
+            if(abs(error) > 0.008):
+                if abs(error) < 0.05:
+                    turn_speed = math.copysign(0.3, error)  
+                else:
+                    turn_speed = error*5
+            self.set_speeds(0.2, turn_speed)
+            print "error: ", error
+        self.stop_all_motion()
         return 1
 
