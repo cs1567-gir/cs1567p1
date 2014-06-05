@@ -27,12 +27,16 @@ def turn_90_degrees():
     return 1
 
 def solve_maze():
-   #move_service('move_distance', 1.0, 0.0)
-   #turn_service('relative', math.pi/2)
+   print('moving 1m')
+   move_service('move_distance', 1.0, 0.0)
+   print('turning 90 degrees to the left (relative)')
+   turn_service('relative', math.pi/2)
+   print('turning to 4pi/3 absolute')
+   turn_service('absolute', 4*math.pi/3)
+   print('moving in a half-meter radius arc')
    move_service('move_arc', 0.5, math.pi)
-   rospy.sleep(0.25)
-   print "moving second arc"
-   move_service('move_arc', 1.0, -2*math.pi)
+   #print "moving second arc"
+   #move_service('move_arc', 1.0, -2*math.pi)
    return 1
    # while True:
    #     data = get_odom_service(0)

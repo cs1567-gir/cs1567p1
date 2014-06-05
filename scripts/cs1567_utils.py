@@ -34,7 +34,7 @@ class KobukiRobot():
             angle = angle + 2*math.pi
         if angle > 2*math.pi:
             angle -= 2*math.pi
-        print 'calculated angle: ', angle
+        # print 'calculated angle: ', angle
         return angle
 
     def set_speeds(self, drive, turn):
@@ -105,16 +105,16 @@ class KobukiRobot():
     # drive an arc described by a radius and an angle
     def move_arc(self, radius, theta):
         turn_speed = 0.0
-        current_distance = self.total_distance
-        current_heading = self.heading
+        initial_distance = self.total_distance
+        initial_heading = self.heading
         arc_length = radius * theta # some calculation
-        while(self.total_distance - current_distance < abs(arc_length)):
+        while(self.total_distance - initial_distance < abs(arc_length)):
             turn_speed = 0.0
             # calculate desired angle based on distance travelled
-            target_heading = (self.total_distance - current_distance)/radius
+            target_heading = (self.total_distance - initial_distance)/radius
             target_heading = math.copysign(target_heading, arc_length)
             # offset by starting angle
-            target_heading -= current_heading
+            target_heading += initial_heading
             # ensure that 0 <= target_heading <= 2*pi
             if target_heading < 0:
                 target_heading += 2*math.pi
@@ -133,6 +133,7 @@ class KobukiRobot():
                 else:
                     turn_speed = error*5
             self.set_speeds(0.2, turn_speed)
+            print "relative distance: ", self.total_distance - initial_distance
             print "error: ", error
         self.stop_all_motion()
         return 1
