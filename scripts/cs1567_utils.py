@@ -95,7 +95,7 @@ class KobukiRobot():
      
             # set turn speed
             if abs(heading_error) > 0.003:
-                if abs(heading_error) > math.pi / 30:
+                if abs(heading_error) > math.pi / 60:
                     drive_speed = 0.0
                 turn_speed = heading_error
             else:
@@ -143,9 +143,9 @@ class KobukiRobot():
         # define acceptible range for angle
         while(abs(error) > 0.003):
             if abs(error) < 2:
-                self.set_speeds(0.0, math.copysign(0.2, error))
+                self.set_speeds(0.0, math.copysign(0.3, error))
             else:
-                self.set_speeds(0.0, error * 0.1)
+                self.set_speeds(0.0, error * 0.3)
             error = theta - self.heading
             # ensure that: -pi < error < pi
             if error > math.pi:

@@ -54,7 +54,6 @@ def odometry_service(parameters):
     return resp
 
 def move_service(parameters):
-    print parameters
     if parameters.type == 'move_to':
         retval = robot_state.move_to(parameters.a, parameters.b) 
     elif parameters.type == 'move_distance':
