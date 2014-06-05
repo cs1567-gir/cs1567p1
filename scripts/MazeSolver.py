@@ -4,10 +4,33 @@ from cs1567p1.srv import *
 from std_srvs.srv import * 
 import math
 
+class MazeNode():
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.visited = False
+        self.adjacent = [UP, RIGHT, DOWN, LEFT]
+
 LEFT = 0
 RIGHT = 1
 UP = 2
 DOWN = 3
+
+class MazeNode():
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.visited = False
+        self.openings = [UP, RIGHT, DOWN, LEFT]
+
+    # return the next available opening to drive through
+    def get_next_opening(self):
+        return self.openings[0]
+
+    # remove an opening from the list (a.k.a. add a wall)
+    def remove_opening(self, direction):
+        self.openings.remove(direction)
+
 
 MazeGrid = [[]]
 
@@ -27,21 +50,12 @@ def turn_90_degrees():
     return 1
 
 def solve_maze():
-   print('moving 1m')
-   move_service('move_distance', 1.0, 0.0)
-   print('turning 90 degrees to the left (relative)')
-   turn_service('relative', math.pi/2)
-   print('turning to 4pi/3 absolute')
-   turn_service('absolute', 4*math.pi/3)
-   print('moving in a half-meter radius arc')
-   move_service('move_arc', 0.5, math.pi)
-   #print "moving second arc"
-   #move_service('move_arc', 1.0, -2*math.pi)
-   return 1
-   # while True:
-   #     data = get_odom_service(0)
-   #     print data
-   #     rospy.sleep(0.5)
+    move_service('move_to', 1.0, 0.0)
+    move_service('move_to', 1.0, 1.0)
+    move_service('move_to', 0.0, 1.0)
+    move_service('move_to', 0.0, 0.0)
+    return 1
+   
 
 def initialize_commands():
     rospy.init_node('mazesolvernode', anonymous=True)

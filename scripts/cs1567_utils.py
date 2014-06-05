@@ -49,6 +49,59 @@ class KobukiRobot():
     # TODO: copy logic from MoveXYOdometry (project0)
     def move_to(self, x, y):
         # logic from MoveXYOdometry
+        drive_speed = 0.0
+        turn_speed = 0.0
+        x_error = x - self.pos_x
+        y_error = y - self.pos_y
+        distance = math.sqrt(x_error**2 + y_error**2)
+        while(distance >= 0.02):
+            
+            x_error = x - self.pos_x
+            y_error = y - self.pos_y
+            distance = math.sqrt(x_error**2 + y_error**2)
+
+            if distance < 0.25:
+                drive_speed = 0.2
+            else:
+                drive_speed = 0.4
+
+            # calculate target heading from coordinates
+            target_heading = math.asin(y_error/distance)
+            
+            # compensate for domain and range issues of asin and acos
+            if x_error < 0.0:
+                target_heading = math.acos(x_error/distance)
+                if y_error < 0.0:
+                    target_heading = 2*math.pi - target_heading
+            
+            # constrain: 0 <= target_heading <= 2pi
+            if target_heading < 0:
+                target_heading += 2*math.pi
+            if target_heading > 2*math.pi:
+                target_heading -= 2*math.pi
+            #print "target heading: ", target_heading
+            # calculate how far we are from the target
+            heading_error = target_heading - self.heading
+
+            # constrain: -pi <= heading_error <= pi
+            if heading_error > math.pi:
+                heading_error -= 2*math.pi
+            if heading_error < -math.pi:
+                heading_error += 2*math.pi
+
+            # scale error by distance to prevent increase in correction as distance decreases
+            if distance < 0.5:
+                heading_error = heading_error * 2 * distance
+     
+            # set turn speed
+            if abs(heading_error) > 0.003:
+                if abs(heading_error) > math.pi / 30:
+                    drive_speed = 0.0
+                turn_speed = heading_error
+            else:
+                turn_speed = 0.0
+            self.set_speeds(drive_speed, turn_speed)
+        self.stop_all_motion()
         return 1
 
     # move forward a given distance
