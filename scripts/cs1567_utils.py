@@ -32,6 +32,8 @@ class KobukiRobot():
         angle = math.copysign(2*math.acos(w), z)
         if angle < 0:
             angle = angle + 2*math.pi
+        if angle > 2*math.pi:
+            angle -= 2*math.pi
         print 'calculated angle: ', angle
         return angle
 
@@ -61,13 +63,25 @@ class KobukiRobot():
     # TODO: check this logic
     def turn_to_relative(self, theta):
         target_heading = self.heading + theta
-        error = theta
-        while(abs(error) > 0.001):
+        # ensure that: 0 <= target_heading <= 2pi
+        if target_heading > 2*math.pi:
+            target_heading -= 2*math.pi
+        if target_heading < 0:
+            target_heading += 2*math.pi
+
+        error = target_heading - self.heading
+        while(abs(error) > 0.005):
             if abs(error) < 2:
                 self.set_speeds(0.0, math.copysign(0.2, error))
             else:
                 self.set_speeds(0.0, error*0.1)
             error = target_heading - self.heading
+            # ensure that: -pi <= error <= pi
+            if error > math.pi:
+                error -= 2*math.pi
+            if error < -math.pi:
+                error += 2*math.pi
+            print 'error: ', error
         self.stop_all_motion()
         return 1
 
