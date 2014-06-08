@@ -70,7 +70,7 @@ def move_service(parameters):
     if parameters.type == 'move_to':
         retval = robot_state.move_to(parameters.a, parameters.b) 
     elif parameters.type == 'move_distance':
-        retval = robot_state.move_distance(parameters.a, parameters.b)
+        retval = robot_state.move_distance(parameters.a)
     elif parameters.type == 'move_arc':
         retval = robot_state.move_arc(parameters.a, parameters.b)
     return CS1567RobotMoveResponse(retval)

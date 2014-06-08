@@ -175,7 +175,7 @@ def solve_maze(target_x, target_y):
         #    move_service('move_to', real_coords[0], real_coords[1])
         #    use_xy = False
         #else:
-        move_service('move_distance', 0.48, get_angle(direction))
+        move_service('move_distance', 0.48, 0.0)
         #    use_xy = True
         rospy.sleep(0.25)
         x = next_x
